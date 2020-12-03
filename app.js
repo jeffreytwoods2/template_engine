@@ -9,10 +9,165 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+let manArray = [];
 
-
+console.log(render);
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+
+function prompts () {
+    inquirer.prompt([
+        {
+            type: 'list',
+            message: 'Which employee would you like to enter?',
+            choices: [
+                'Manager',
+                'Engineer',
+                'Intern'
+            ],
+            name: 'role'
+        },
+    
+        {
+            type: 'input',
+            message: 'Please type employee name:',
+            name: 'name'
+        },
+    
+        {
+            type: 'input',
+            message: 'Please type employee ID:',
+            name: 'id'
+        },
+    
+        {
+            type: 'input',
+            message: 'Please type employee email:',
+            name: 'email'
+        },
+    
+    
+    ]).then((response) => {
+        
+        switch(response.role) {
+            case 'Manager':
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Please type Manager\'s office number:',
+                        name:'number'
+                    }
+                ]).then((final) => {
+                    const manager = new Manager(response.name, response.id, response.email, final.number);
+                    manArray.push(manager);
+                    // push manArray into file
+                    const rendered = render(manArray);
+                    fs.writeFile('./output/test.html', rendered, function (err,data) {
+                        if (err) {
+                          return console.log(err);
+                        }
+                    });                    
+                    addRole();
+                });
+                break;
+            case 'Engineer':
+                engineerQs();
+                break;
+            case 'Intern':
+                internQs();
+                break;
+            default:
+                console.error('Error in switch case.')
+        }
+    });
+};
+prompts();
+// function managerQs () {
+//     inquirer.prompt([
+//         {
+//             type: 'input',
+//             message: 'Please type employee name:',
+//             name: 'name'
+//         },
+
+//         {
+//             type: 'input',
+//             message: 'Please type employee email:',
+//             name: 'email'
+//         },
+
+//         {
+//             type: 'input',
+//             message: 'Please type office number:',
+//             name: 'number'
+//         }
+//     ]).then((response) => {
+//         const manager = new Manager(response.name, response.id, response.email, response.number);
+//         roleArray.push(manager);
+//         // push roleArray into file
+//     })
+// };
+
+function engineerQs () {
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'Please type employee name:',
+            name: 'name'
+        },
+
+        {
+            type: 'input',
+            message: 'Please type employee email:',
+            name: 'email'
+        },
+
+        {
+            type: 'input',
+            message: 'Please type Github profile:',
+            name: 'github'
+        }
+    ])
+};
+
+function internQs () {
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: 'Please type employee name:',
+            name: 'name'
+        },
+
+        {
+            type: 'input',
+            message: 'Please type employee email:',
+            name: 'email'
+        },
+
+        {
+            type: 'input',
+            message: 'Please type employee\'s current school:',
+            name: 'school'
+        }
+    ])
+};
+
+function addRole() {
+    inquirer
+      .prompt([
+        {
+          type: "confirm",
+          name: "choice",
+          message: "Add another employee?"
+        }
+      ]).then(val => {
+            if (val.choice) {
+                prompts();
+            } else {
+                process.exit(0)
+            }
+      });
+};
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
