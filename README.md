@@ -2,13 +2,18 @@
 
 ### Technologies
 HTML
+
 CSS
+
 Javascript
+
 Node.js
+
 NPM
 
 ### Frameworks
 Bootstrap
+
 Font Awesome
 
 ### Purpose
