@@ -9,7 +9,7 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-let manArray = [];
+let empArray = [];
 
 console.log(render);
 // Write code to use inquirer to gather information about the development team members,
@@ -54,15 +54,14 @@ function prompts () {
                 inquirer.prompt([
                     {
                         type: 'input',
-                        message: 'Please type Manager\'s office number:',
+                        message: 'Please type manager\'s office number:',
                         name:'number'
                     }
                 ]).then((final) => {
                     const manager = new Manager(response.name, response.id, response.email, final.number);
-                    manArray.push(manager);
-                    // push manArray into file
-                    const rendered = render(manArray);
-                    fs.writeFile('./output/test.html', rendered, function (err,data) {
+                    empArray.push(manager);
+                    const rendered = render(empArray);
+                    fs.writeFile('./output/team.html', rendered, function (err,data) {
                         if (err) {
                           return console.log(err);
                         }
@@ -71,10 +70,42 @@ function prompts () {
                 });
                 break;
             case 'Engineer':
-                engineerQs();
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Please type engineer\'s GitHub profile:',
+                        name:'github'
+                    }
+                ]).then((final) => {
+                    const engineer = new Engineer(response.name, response.id, response.email, final.github);
+                    empArray.push(engineer);
+                    const rendered = render(empArray);
+                    fs.writeFile('./output/team.html', rendered, function (err,data) {
+                        if (err) {
+                          return console.log(err);
+                        }
+                    });                    
+                    addRole();
+                });
                 break;
             case 'Intern':
-                internQs();
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Please type intern\'s current school:',
+                        name:'school'
+                    }
+                ]).then((final) => {
+                    const intern = new Intern(response.name, response.id, response.email, final.school);
+                    empArray.push(intern);
+                    const rendered = render(empArray);
+                    fs.writeFile('./output/team.html', rendered, function (err,data) {
+                        if (err) {
+                          return console.log(err);
+                        }
+                    });                    
+                    addRole();
+                });
                 break;
             default:
                 console.error('Error in switch case.')
